@@ -1,0 +1,59 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div ngModelGroup="contact" #contact="ngModelGroup">
+      <div *ngIf="contact.valid" >Valid Form</div>
+        <div class="form-group">
+            <label for="firstname"><strong>Firstname</strong></label>
+            <input 
+              required 
+              minlength="3" 
+              maxlength="10" 
+              pattern="banana" 
+              ngModel 
+              name="firstname"  
+              #firstname="ngModel" 
+              type="text" 
+              id="firstname" 
+              (change)="log(firstname)" 
+              class="form-control">
+            <div 
+              class="alert alert-danger" 
+              *ngIf="firstname.touched && !firstname.valid">
+              <div 
+                *ngIf="firstname.errors.required" >
+                First name is required</div>
+              <div 
+                *ngIf="firstname.errors.minlength" >
+                First name must be at least {{firstname.errors.minlength.requiredLength}} charecter</div>
+              <div 
+                *ngIf="firstname.errors.pattern" >
+                First name does not match the pattern </div>
+            </div>
+          </div>
+    </div>
+  <div class="form-group">
+    <label for="comment"><strong>Comment</strong></label>
+    <textarea ngModel name="comment" id="comment" cols="30" rows="10" class="form-control"></textarea>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input ngModel name="isSubscribed" type="checkbox"> Subscribe to mailing List
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="contactMethod"></label>
+    <select ngModel name="contactMethod" id="contactMethod" class="form-control">
+      <option value=""></option>
+      <option *ngFor="let method of contactMethods" [ngValue]="method">{{method.name}}</option>
+    </select>
+  </div>
+  <div *ngFor="let radioMethod of contactMethods">
+    <label>
+      <input type="radio" ngModel name="contactMethodRadio" [value]="radioMethod.id"/>
+      {{radioMethod.name}}
+    </label>
+  </div>
+  <p>
+    {{ f.value   | json }}
+  </p>
+  <button class="btn btn-primary" [disabled]="!f.valid">Submit</button>
+</form>
