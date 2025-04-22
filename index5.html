@@ -1,0 +1,2351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AbraKaDabra Banking API Portal - Enhanced</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Light Mode Palette (Blue-Green Inspired) */
+        --primary-color: #0d9488; /* Teal-600 */
+        --primary-hover: #0f766e; /* Teal-700 */
+        --primary-light: #ccfbf1; /* Teal-100 */
+        --secondary-color: #3b82f6; /* Blue-500 */
+        --secondary-hover: #2563eb; /* Blue-600 */
+        --success-color: #10b981; /* Emerald */
+        --success-light: #d1fae5;
+        --error-color: #ef4444; /* Red */
+        --error-light: #fee2e2;
+        --warning-color: #f59e0b; /* Amber */
+        --warning-light: #fef3c7;
+        --info-color: #3b82f6; /* Blue */
+        --info-light: #dbeafe;
+        --text-primary: #1f2937; /* Gray-800 */
+        --text-secondary: #4b5563; /* Gray-600 */
+        --text-muted: #9ca3af; /* Gray-400 */
+        --bg-main: #f9fafb; /* Gray-50 */
+        --bg-card: #ffffff;
+        --bg-nav: #ffffff;
+        --border-color: #e5e7eb; /* Gray-200 */
+        --code-bg: #1f2937; /* Gray-800 */
+        --code-text: #d1d5db; /* Gray-300 */
+      }
+
+      .dark {
+        /* Dark Mode Palette */
+        --primary-color: #2dd4bf; /* Teal-400 */
+        --primary-hover: #5eead4; /* Teal-300 */
+        --primary-light: #0f766e; /* Teal-700 */ /* Darker light for contrast */
+        --secondary-color: #60a5fa; /* Blue-400 */
+        --secondary-hover: #93c5fd; /* Blue-300 */
+        --success-color: #34d399; /* Emerald-400 */
+        --success-light: #065f46; /* Emerald-800 */
+        --error-color: #f87171; /* Red-400 */
+        --error-light: #991b1b; /* Red-800 */
+        --warning-color: #fbbf24; /* Amber-400 */
+        --warning-light: #92400e; /* Amber-800 */
+        --info-color: #60a5fa; /* Blue-400 */
+        --info-light: #1e40af; /* Blue-800 */
+        --text-primary: #f3f4f6; /* Gray-100 */
+        --text-secondary: #d1d5db; /* Gray-300 */
+        --text-muted: #6b7280; /* Gray-500 */
+        --bg-main: #111827; /* Gray-900 */
+        --bg-card: #1f2937; /* Gray-800 */
+        --bg-nav: #1f2937; /* Gray-800 */
+        --border-color: #374151; /* Gray-700 */
+        --code-bg: #0f172a; /* Slate-900 */
+        --code-text: #cbd5e1; /* Slate-300 */
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+        min-height: 100vh;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .code-block {
+        background-color: var(--code-bg);
+        color: var(--code-text);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        overflow-x: auto;
+        font-family: "Fira Code", monospace;
+        font-size: 0.875rem; /* 14px */
+        line-height: 1.6;
+        border: 1px solid var(--border-color);
+      }
+      /* Code highlighting colors adjusted slightly for better contrast */
+      .code-block .key {
+        color: #fda4af;
+      } /* Rose-300 */
+      .code-block .string {
+        color: #6ee7b7;
+      } /* Emerald-300 */
+      .code-block .number {
+        color: #fde047;
+      } /* Yellow-300 */
+      .code-block .boolean {
+        color: #93c5fd;
+      } /* Blue-300 */
+      .code-block .null {
+        color: #d8b4fe;
+      } /* Purple-300 */
+
+      .tab-active {
+        border-bottom: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+      .tab-inactive {
+        border-bottom: 2px solid transparent;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+      }
+      .tab-inactive:hover {
+        border-bottom-color: var(--border-color);
+        color: var(--text-primary);
+      }
+      .btn {
+        padding: 0.6rem 1.25rem;
+        border-radius: 0.375rem; /* 6px */
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        line-height: 1.25; /* Ensure consistent height */
+      }
+      .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+      .btn-primary:not(:disabled):hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+      }
+      .btn-secondary {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+        border-color: var(--border-color);
+      }
+      .btn-secondary:not(:disabled):hover {
+        background-color: var(--bg-main);
+        border-color: var(--text-muted);
+      } /* Subtle hover */
+      .btn-ghost {
+        background-color: transparent;
+        color: var(--text-secondary);
+        border: none;
+      }
+      .btn-ghost:not(:disabled):hover {
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+      }
+      .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.875rem;
+      } /* 14px */
+      .btn-xs {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+      } /* 12px */
+
+      .card {
+        background-color: var(--bg-card);
+        border-radius: 0.5rem; /* 8px */
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .sidebar {
+        width: 16rem; /* 256px */
+        background-color: var(--bg-nav);
+        border-right: 1px solid var(--border-color);
+        transition: width 0.3s ease, background-color 0.3s ease,
+          border-color 0.3s ease;
+        flex-shrink: 0;
+      }
+      .sidebar.collapsed {
+        width: 4rem; /* 64px */
+      }
+      .sidebar.collapsed .sidebar-text {
+        display: none;
+      }
+      .sidebar.collapsed .sidebar-header {
+        justify-content: center;
+      }
+      .sidebar.collapsed .sidebar-link {
+        justify-content: center;
+      }
+      .sidebar.collapsed .sidebar-link .mr-3 {
+        margin-right: 0;
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem; /* 6px */
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .sidebar-link:hover {
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+      }
+      .sidebar-link.active {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        font-weight: 500;
+        border-left-color: var(--primary-color);
+      }
+      .dark .sidebar-link.active {
+        background-color: rgba(45, 212, 191, 0.1);
+      } /* Teal-400 with alpha */
+
+      .endpoint-card {
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem; /* 8px */
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+      .endpoint-card:hover {
+        border-color: var(--text-muted);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        background-color: var(--bg-main);
+      }
+      .endpoint-card.active {
+        border-color: var(--primary-color);
+        background-color: var(--primary-light);
+        box-shadow: 0 0 0 1px var(--primary-color);
+      }
+      .dark .endpoint-card.active {
+        background-color: rgba(45, 212, 191, 0.1);
+      }
+
+      .scenario-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem; /* 14px */
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+      .scenario-btn.positive {
+        border-color: var(--success-color);
+        color: var(--success-color);
+      }
+      .scenario-btn.negative {
+        border-color: var(--error-color);
+        color: var(--error-color);
+      }
+      .scenario-btn.active {
+        color: white;
+      }
+      .scenario-btn.positive.active {
+        background-color: var(--success-color);
+        border-color: var(--success-color);
+      }
+      .scenario-btn.negative.active {
+        background-color: var(--error-color);
+        border-color: var(--error-color);
+      }
+      .scenario-btn:not(.active):hover {
+        background-color: var(--bg-main);
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out;
+      }
+      @keyframes slideDown {
+        from {
+          transform: translateY(-10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .animate-slideDown {
+        animation: slideDown 0.3s ease-out;
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        animation: fadeIn 0.2s ease-out;
+      }
+      .modal-content {
+        background-color: var(--bg-card);
+        border-radius: 0.5rem; /* 8px */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        width: 90%;
+        max-width: 5xl; /* Wider modal for history */
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        animation: slideDown 0.3s ease-out;
+        border: 1px solid var(--border-color);
+      }
+
+      /* Input Styles */
+      .input {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0.75rem; /* 8px 12px */
+        font-size: 0.875rem; /* 14px */
+        line-height: 1.25rem; /* 20px */
+        color: var(--text-primary);
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0.375rem; /* 6px */
+        box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .input:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px var(--primary-light);
+      }
+      .dark .input {
+        background-color: var(--bg-main);
+      }
+      .dark .input:focus {
+        box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.3);
+      } /* Teal-400 with alpha */
+
+      /* Tooltip Placeholder */
+      [data-tooltip]:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-5px);
+        background-color: #333;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 10;
+      }
+      [data-tooltip] {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body class="text-sm">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // --- Reusable Components ---
+
+      const Icon = ({ path, className = "w-5 h-5", ariaHidden = true }) => (
+        <svg
+          className={className}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden={ariaHidden}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d={path}
+          ></path>
+        </svg>
+      );
+
+      const Badge = ({ text, color = "info", className = "" }) => {
+        const colors = {
+          success:
+            "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200",
+          error: "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200",
+          warning:
+            "bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200",
+          info: "bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200",
+          primary:
+            "bg-teal-100 text-teal-700 dark:bg-teal-800 dark:text-teal-200", // Updated primary
+          gray: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200",
+          GET: "bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200",
+          POST: "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200",
+          PUT: "bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200",
+          DELETE: "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200",
+          PATCH:
+            "bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200",
+        };
+        return (
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              colors[color] || colors.gray
+            } ${className}`}
+          >
+            {text}
+          </span>
+        );
+      };
+
+      const CodeBlock = ({ language, content, copyable = true }) => {
+        const [copied, setCopied] = React.useState(false);
+        const textContent = React.useMemo(() => {
+          try {
+            // Attempt pretty-printing for JSON, otherwise use string representation
+            if (language === "json" && typeof content !== "string") {
+              return JSON.stringify(content, null, 2);
+            }
+            if (typeof content === "string") {
+              // If it's already a string, try to parse and re-stringify for formatting
+              try {
+                return JSON.stringify(JSON.parse(content), null, 2);
+              } catch {
+                return content; // Return original string if not valid JSON
+              }
+            }
+            return String(content); // Fallback for non-string, non-JSON content
+          } catch {
+            return String(content); // Ultimate fallback
+          }
+        }, [content, language]);
+
+        const handleCopy = () => {
+          navigator.clipboard
+            .writeText(textContent)
+            .then(() => {
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            })
+            .catch((err) => console.error("Copy failed:", err));
+        };
+
+        // Enhanced JSON formatting with error highlighting (basic)
+        const formatJson = (jsonString) => {
+          try {
+            const parsed = JSON.parse(jsonString);
+            const isError =
+              parsed && parsed.error && typeof parsed.error === "object";
+
+            // Unique placeholders
+            const keyPlaceholder = "___KEY_PLACEHOLDER___";
+            let keyIndex = 0;
+            const keyMap = {};
+
+            let html = JSON.stringify(parsed, null, 2)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+
+              // 1. Replace keys with placeholders first
+              .replace(/"([^"]+)":/g, (match, key) => {
+                const placeholder = `${keyPlaceholder}${keyIndex++}`;
+                keyMap[placeholder] = `<span class="key">"${key}"</span>:`; // Store the final HTML for the key
+                return placeholder; // Put placeholder in the string
+              })
+
+              // 2. Replace other values (strings, numbers, booleans, null)
+              .replace(/"((?:\\.|[^"\\])*)"/g, (match, stringValue) => {
+                // String values
+                const isErrorField =
+                  isError &&
+                  /"(code|message|details)"\s*:/.test(match.substring(0, 15)); // Basic check
+                if (isErrorField) {
+                  return `<span class="string" style="color: var(--error-color); font-weight: 500;">"${stringValue}"</span>`;
+                }
+                return `<span class="string">"${stringValue}"</span>`;
+              })
+              .replace(
+                /\b(\d+(\.\d+)?)\b/g,
+                (match, numberValue) =>
+                  `<span class="number">${numberValue}</span>`
+              ) // Numbers
+              .replace(
+                /\b(true|false)\b/g,
+                (match, booleanValue) =>
+                  `<span class="boolean">${booleanValue}</span>`
+              ) // Booleans
+              .replace(
+                /\b(null)\b/g,
+                (match, nullValue) => `<span class="null">${nullValue}</span>`
+              ); // Null
+
+            // 3. Restore keys from placeholders
+            Object.keys(keyMap).forEach((placeholder) => {
+              // Use a function in replace to avoid issues with special characters in the placeholder or replacement
+              html = html.replace(placeholder, () => keyMap[placeholder]);
+            });
+
+            // Wrap error object for visual distinction (optional) - This regex might need adjustment
+            if (isError) {
+              // Ensure this regex targets the final HTML structure correctly
+              html = html.replace(
+                /(\s*<span class="key">"error"<\/span>:\s*\{[\s\S]*?\n\s*\})/m,
+                '<div style="background-color: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--error-color); padding-left: 5px; margin-left: -8px;">$1</div>'
+              );
+            }
+
+            return html;
+          } catch {
+            // Return escaped string if JSON parsing fails
+            return jsonString
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+          }
+        };
+
+        return (
+          <div className="relative group">
+            {copyable && (
+              <button
+                onClick={handleCopy}
+                className={`absolute top-2 right-2 p-1 rounded transition-all duration-200 z-10 ${
+                  copied
+                    ? "bg-green-600 text-white"
+                    : "bg-gray-700 dark:bg-gray-600 text-gray-300 dark:text-gray-200 opacity-0 group-hover:opacity-100 hover:bg-gray-600 dark:hover:bg-gray-500"
+                }`}
+                aria-label={copied ? "Copied!" : "Copy code"}
+                title={copied ? "Copied!" : "Copy code"}
+              >
+                <Icon
+                  path={
+                    copied
+                      ? "M5 13l4 4L19 7"
+                      : "M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  }
+                  className="w-4 h-4"
+                />
+              </button>
+            )}
+            <pre className="code-block">
+              {language === "json" ? (
+                <code
+                  dangerouslySetInnerHTML={{ __html: formatJson(textContent) }}
+                />
+              ) : (
+                <code>{textContent}</code>
+              )}
+            </pre>
+          </div>
+        );
+      };
+
+      const TabPanel = ({ children, activeTab, id }) =>
+        activeTab === id ? (
+          <div
+            className="mt-4 animate-fadeIn"
+            role="tabpanel"
+            aria-labelledby={`${id}-tab`}
+          >
+            {children}
+          </div>
+        ) : null;
+
+      // --- History Panel Component ---
+      const HistoryPanel = ({ history, onClose, onClear, onRetry }) => {
+        const [filterStatus, setFilterStatus] = React.useState("all"); // 'all', 'success', 'error'
+        const [sortBy, setSortBy] = React.useState("timestamp_desc"); // 'timestamp_desc', 'timestamp_asc', 'responseTime_desc', 'responseTime_asc'
+        const [searchTerm, setSearchTerm] = React.useState("");
+
+        const formatTime = (isoString) => {
+          try {
+            return new Date(isoString).toLocaleString([], {
+              dateStyle: "short",
+              timeStyle: "medium",
+            });
+          } catch {
+            return "-";
+          }
+        };
+
+        const filteredAndSortedHistory = React.useMemo(() => {
+          let items = [...history];
+
+          // Filter by status
+          if (filterStatus === "success")
+            items = items.filter((item) => item.success);
+          if (filterStatus === "error")
+            items = items.filter((item) => !item.success);
+
+          // Filter by search term (endpoint name or scenario name)
+          if (searchTerm) {
+            const lowerSearch = searchTerm.toLowerCase();
+            items = items.filter(
+              (item) =>
+                item.endpointName.toLowerCase().includes(lowerSearch) ||
+                item.scenarioName.toLowerCase().includes(lowerSearch)
+            );
+          }
+
+          // Sort
+          items.sort((a, b) => {
+            switch (sortBy) {
+              case "timestamp_asc":
+                return new Date(a.timestamp) - new Date(b.timestamp);
+              case "responseTime_desc":
+                return b.responseTime - a.responseTime;
+              case "responseTime_asc":
+                return a.responseTime - b.responseTime;
+              case "timestamp_desc": // Default
+              default:
+                return new Date(b.timestamp) - new Date(a.timestamp);
+            }
+          });
+
+          return items;
+        }, [history, filterStatus, sortBy, searchTerm]);
+
+        const handleExport = () => {
+          // Basic CSV Export
+          const headers = [
+            "Timestamp",
+            "Method",
+            "Endpoint",
+            "Scenario",
+            "Status",
+            "Success",
+            "Response Time (ms)",
+          ];
+          const rows = filteredAndSortedHistory.map((item) =>
+            [
+              `"${formatTime(item.timestamp)}"`,
+              item.method,
+              `"${item.endpointName}"`,
+              `"${item.scenarioName}"`,
+              item.status,
+              item.success ? "Yes" : "No",
+              item.responseTime,
+            ].join(",")
+          );
+          const csvContent =
+            "data:text/csv;charset=utf-8," +
+            [headers.join(","), ...rows].join("\n");
+          const encodedUri = encodeURI(csvContent);
+          const link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", "api_test_history.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          console.log("Exporting CSV..."); // Placeholder
+        };
+
+        return (
+          <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              {/* Modal Header */}
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center flex-shrink-0">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                  Test History
+                </h3>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleExport}
+                    className="btn btn-secondary btn-sm"
+                    title="Export Visible History as CSV"
+                  >
+                    <Icon
+                      path="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      className="w-4 h-4 mr-1"
+                    />{" "}
+                    Export
+                  </button>
+                  <button
+                    onClick={onClear}
+                    className="btn btn-secondary btn-sm"
+                    title="Clear All History"
+                  >
+                    <Icon
+                      path="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      className="w-4 h-4 mr-1"
+                    />{" "}
+                    Clear All
+                  </button>
+                  <button
+                    onClick={onClose}
+                    className="btn btn-ghost btn-sm p-1"
+                    aria-label="Close history panel"
+                  >
+                    <Icon path="M6 18L18 6M6 6l12 12" className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Filters and Sorting */}
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 flex flex-wrap gap-4 items-center text-xs">
+                <div className="flex-grow min-w-[150px]">
+                  <label
+                    htmlFor="history-search"
+                    className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1"
+                  >
+                    Search
+                  </label>
+                  <input
+                    id="history-search"
+                    type="text"
+                    placeholder="Filter by name..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="input input-sm w-full"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="history-status"
+                    className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1"
+                  >
+                    Status
+                  </label>
+                  <select
+                    id="history-status"
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="input input-sm"
+                  >
+                    <option value="all">All</option>
+                    <option value="success">Success</option>
+                    <option value="error">Error</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="history-sort"
+                    className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1"
+                  >
+                    Sort By
+                  </label>
+                  <select
+                    id="history-sort"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="input input-sm"
+                  >
+                    <option value="timestamp_desc">Newest First</option>
+                    <option value="timestamp_asc">Oldest First</option>
+                    <option value="responseTime_desc">Slowest First</option>
+                    <option value="responseTime_asc">Fastest First</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* History List */}
+              <div className="p-4 overflow-y-auto flex-grow">
+                {filteredAndSortedHistory.length > 0 ? (
+                  <ul className="space-y-3">
+                    {filteredAndSortedHistory.map((item) => (
+                      <li
+                        key={item.id}
+                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded border border-gray-200 dark:border-gray-700 text-xs"
+                      >
+                        <div className="flex items-center space-x-3 flex-wrap gap-y-1">
+                          <span title={item.success ? "Success" : "Error"}>
+                            {item.success ? (
+                              <Icon
+                                path="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                className="w-5 h-5 text-green-500"
+                              />
+                            ) : (
+                              <Icon
+                                path="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                className="w-5 h-5 text-red-500"
+                              />
+                            )}
+                          </span>
+                          <Badge text={item.method} color={item.method} />
+                          <span className="font-medium text-gray-700 dark:text-gray-200">
+                            {item.endpointName}
+                          </span>
+                          <span className="text-gray-500 dark:text-gray-400 italic">
+                            ({item.scenarioName})
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-3 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                          <Badge
+                            text={`${item.status}`}
+                            color={item.success ? "success" : "error"}
+                          />
+                          <Badge
+                            text={`${item.responseTime} ms`}
+                            color="info"
+                          />
+                          <span className="hidden md:inline">
+                            {formatTime(item.timestamp)}
+                          </span>
+                          {/* Add Retry from History button - requires passing retry logic */}
+                          {/* <button onClick={() => onRetry(item)} className="btn btn-ghost btn-xs p-1" title="Retry this request">
+                            <Icon path="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9H0v5h.581m15.357-2a8.001 8.001 0 01-14.24 5.33" className="w-4 h-4"/>
+                         </button> */}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-8">
+                    No history entries match your filters.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- API Data Structure ---
+      const generateId = (prefix = "") =>
+        prefix + Math.random().toString(36).substring(2, 11);
+
+      const apiStructure = {
+        payments: {
+          name: "Payments API",
+          icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z",
+          // Add a documentation link placeholder
+          docsUrl: "https://docs.abrakadabra-bank.com/payments",
+          endpoints: [
+            {
+              id: "create_payment",
+              name: "Create Payment",
+              method: "POST",
+              path: "/v1/payments",
+              description: "Initiates a new payment instruction.",
+              docsUrl:
+                "https://docs.abrakadabra-bank.com/payments#create-payment", // Endpoint specific doc link
+              testScenarios: [
+                {
+                  id: "cp_pos_domestic",
+                  name: "Valid Domestic",
+                  type: "positive",
+                  expectedStatus: 201,
+                  payload: {
+                    sourceAccountId: generateId("acct_"),
+                    destinationAccountId: generateId("acct_"),
+                    amount: 150.75,
+                    currency: "USD",
+                    description: "Invoice #123",
+                    reference: generateId("ref_"),
+                  },
+                },
+                {
+                  id: "cp_pos_intl",
+                  name: "Valid International",
+                  type: "positive",
+                  expectedStatus: 201,
+                  payload: {
+                    sourceAccountId: generateId("acct_"),
+                    beneficiaryName: "Jane Doe",
+                    beneficiaryAddress: "123 Global St, London",
+                    beneficiaryBankCode: "GB12ABCD12345678901234",
+                    amount: 1200.0,
+                    currency: "GBP",
+                    description: "Consulting Fee",
+                    reference: generateId("ref_"),
+                  },
+                },
+                {
+                  id: "cp_neg_amount",
+                  name: "Invalid Amount",
+                  type: "negative",
+                  expectedStatus: 400,
+                  payload: {
+                    sourceAccountId: generateId("acct_"),
+                    destinationAccountId: generateId("acct_"),
+                    amount: -50.0,
+                    currency: "USD",
+                    description: "Negative Amount Test",
+                    reference: generateId("ref_"),
+                  },
+                },
+                {
+                  id: "cp_neg_currency",
+                  name: "Missing Currency",
+                  type: "negative",
+                  expectedStatus: 400,
+                  payload: {
+                    sourceAccountId: generateId("acct_"),
+                    destinationAccountId: generateId("acct_"),
+                    amount: 100.0,
+                    description: "Missing Currency Test",
+                    reference: generateId("ref_"),
+                  },
+                },
+                {
+                  id: "cp_neg_source",
+                  name: "Missing Source Account",
+                  type: "negative",
+                  expectedStatus: 400,
+                  payload: {
+                    destinationAccountId: generateId("acct_"),
+                    amount: 25.0,
+                    currency: "USD",
+                    description: "Missing Source Test",
+                    reference: generateId("ref_"),
+                  },
+                },
+              ],
+            },
+            {
+              id: "get_payment",
+              name: "Get Payment Status",
+              method: "GET",
+              path: "/v1/payments/{paymentId}",
+              description:
+                "Retrieves the status and details of a specific payment.",
+              docsUrl: "https://docs.abrakadabra-bank.com/payments#get-payment",
+              testScenarios: [
+                {
+                  id: "gp_pos_valid",
+                  name: "Valid ID",
+                  type: "positive",
+                  expectedStatus: 200,
+                  payload: { paymentId: generateId("pmt_") },
+                },
+                {
+                  id: "gp_neg_notfound",
+                  name: "Non-Existent ID",
+                  type: "negative",
+                  expectedStatus: 404,
+                  payload: { paymentId: "pmt_invalid123" },
+                },
+                {
+                  id: "gp_neg_format",
+                  name: "Invalid ID Format",
+                  type: "negative",
+                  expectedStatus: 400,
+                  payload: { paymentId: "invalid-id" },
+                },
+              ],
+            },
+          ],
+        },
+        accounts: {
+          name: "Accounts API",
+          icon: "M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z",
+          docsUrl: "https://docs.abrakadabra-bank.com/accounts",
+          endpoints: [
+            {
+              id: "get_balance",
+              name: "Get Account Balance",
+              method: "GET",
+              path: "/v1/accounts/{accountId}/balance",
+              description:
+                "Fetches the current and available balance for an account.",
+              docsUrl: "https://docs.abrakadabra-bank.com/accounts#get-balance",
+              testScenarios: [
+                {
+                  id: "gb_pos_valid",
+                  name: "Valid Account",
+                  type: "positive",
+                  expectedStatus: 200,
+                  payload: { accountId: generateId("acct_") },
+                },
+                {
+                  id: "gb_neg_notfound",
+                  name: "Non-Existent Account",
+                  type: "negative",
+                  expectedStatus: 404,
+                  payload: { accountId: "acct_invalid999" },
+                },
+              ],
+            },
+            {
+              id: "get_transactions",
+              name: "List Transactions",
+              method: "GET",
+              path: "/v1/accounts/{accountId}/transactions",
+              description:
+                "Retrieves a list of transactions for a given account, with optional filtering.",
+              docsUrl:
+                "https://docs.abrakadabra-bank.com/accounts#list-transactions",
+              testScenarios: [
+                {
+                  id: "gt_pos_basic",
+                  name: "Valid Account (Default)",
+                  type: "positive",
+                  expectedStatus: 200,
+                  payload: { accountId: generateId("acct_") },
+                },
+                {
+                  id: "gt_pos_filtered",
+                  name: "Valid Account (Filtered)",
+                  type: "positive",
+                  expectedStatus: 200,
+                  payload: {
+                    accountId: generateId("acct_"),
+                    limit: 10,
+                    startDate: "2025-03-01",
+                    endDate: "2025-04-01",
+                  },
+                },
+                {
+                  id: "gt_neg_daterange",
+                  name: "Invalid Date Range",
+                  type: "negative",
+                  expectedStatus: 400,
+                  payload: {
+                    accountId: generateId("acct_"),
+                    startDate: "2025-04-01",
+                    endDate: "2025-03-01",
+                  },
+                },
+                {
+                  id: "gt_neg_limit",
+                  name: "Invalid Limit",
+                  type: "negative",
+                  expectedStatus: 400,
+                  payload: { accountId: generateId("acct_"), limit: 500 },
+                }, // Assuming max limit is 100
+              ],
+            },
+          ],
+        },
+        // Add more categories like 'Customers', 'Cards' etc. following the same structure
+      };
+
+      // --- Main Application Component ---
+
+      const BankingApiPortal = () => {
+        const [token, setToken] = React.useState("");
+        const [environment, setEnvironment] = React.useState("sandbox");
+        const [selectedCategoryId, setSelectedCategoryId] = React.useState(
+          Object.keys(apiStructure)[0]
+        );
+        const [selectedEndpointId, setSelectedEndpointId] =
+          React.useState(null);
+        const [selectedScenarioId, setSelectedScenarioId] =
+          React.useState(null);
+        const [currentPayload, setCurrentPayload] = React.useState("");
+        const [response, setResponse] = React.useState(null);
+        const [isLoading, setIsLoading] = React.useState(false);
+        const [tokenValid, setTokenValid] = React.useState(null);
+        const [responseTab, setResponseTab] = React.useState("formatted");
+        const [testHistory, setTestHistory] = React.useState([]);
+        const [showHistory, setShowHistory] = React.useState(false);
+        const [jsonError, setJsonError] = React.useState(null);
+        const [startTime, setStartTime] = React.useState(null);
+        const [isSidebarCollapsed, setIsSidebarCollapsed] =
+          React.useState(false);
+        const [categorySearchTerm, setCategorySearchTerm] = React.useState("");
+        const [endpointSearchTerm, setEndpointSearchTerm] = React.useState("");
+        const [isDarkMode, setIsDarkMode] = React.useState(false);
+
+        // Apply dark mode class to html element
+        React.useEffect(() => {
+          const root = window.document.documentElement;
+          if (isDarkMode) {
+            root.classList.add("dark");
+          } else {
+            root.classList.remove("dark");
+          }
+          // Optional: Save preference to localStorage
+          // localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+        }, [isDarkMode]);
+
+        // Optional: Load dark mode preference on initial load
+        // React.useEffect(() => {
+        //   const savedMode = localStorage.getItem('darkMode');
+        //   if (savedMode !== null) {
+        //     setIsDarkMode(JSON.parse(savedMode));
+        //   } else {
+        //      // Default to system preference if available
+        //      setIsDarkMode(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        //   }
+        // }, []);
+
+        // Derived State
+        const filteredApiStructure = React.useMemo(() => {
+          if (!categorySearchTerm) return apiStructure;
+          const lowerSearch = categorySearchTerm.toLowerCase();
+          return Object.entries(apiStructure)
+            .filter(([id, category]) =>
+              category.name.toLowerCase().includes(lowerSearch)
+            )
+            .reduce((obj, [id, category]) => {
+              obj[id] = category;
+              return obj;
+            }, {});
+        }, [categorySearchTerm]);
+
+        const selectedCategory = filteredApiStructure[selectedCategoryId];
+
+        const filteredEndpoints = React.useMemo(() => {
+          if (!selectedCategory) return [];
+          if (!endpointSearchTerm) return selectedCategory.endpoints;
+          const lowerSearch = endpointSearchTerm.toLowerCase();
+          return selectedCategory.endpoints.filter(
+            (ep) =>
+              ep.name.toLowerCase().includes(lowerSearch) ||
+              ep.path.toLowerCase().includes(lowerSearch) ||
+              ep.description.toLowerCase().includes(lowerSearch)
+          );
+        }, [selectedCategory, endpointSearchTerm]);
+
+        const selectedEndpoint = React.useMemo(
+          () => filteredEndpoints.find((ep) => ep.id === selectedEndpointId),
+          [filteredEndpoints, selectedEndpointId]
+        );
+        const selectedScenario = React.useMemo(
+          () =>
+            selectedEndpoint?.testScenarios.find(
+              (sc) => sc.id === selectedScenarioId
+            ),
+          [selectedEndpoint, selectedScenarioId]
+        );
+
+        // Effects
+        React.useEffect(() => {
+          // Select first endpoint of category if category changes or filtered list changes
+          if (
+            selectedCategory &&
+            (!selectedEndpointId ||
+              !filteredEndpoints.find((ep) => ep.id === selectedEndpointId))
+          ) {
+            const firstEndpointId = filteredEndpoints[0]?.id;
+            setSelectedEndpointId(firstEndpointId || null);
+          } else if (!selectedCategory) {
+            setSelectedEndpointId(null); // Clear endpoint if category is deselected/filtered out
+          }
+        }, [
+          selectedCategoryId,
+          selectedCategory,
+          filteredEndpoints,
+          selectedEndpointId,
+        ]);
+
+        React.useEffect(() => {
+          // Select first scenario when endpoint changes
+          if (selectedEndpoint) {
+            const firstScenario = selectedEndpoint.testScenarios?.[0];
+            if (firstScenario) {
+              setSelectedScenarioId(firstScenario.id);
+              setCurrentPayload(JSON.stringify(firstScenario.payload, null, 2));
+              setJsonError(null);
+            } else {
+              setSelectedScenarioId(null);
+              // Default payload based on method
+              const defaultPayload = ["POST", "PUT", "PATCH"].includes(
+                selectedEndpoint.method
+              )
+                ? "{}"
+                : "";
+              setCurrentPayload(defaultPayload);
+              setJsonError(null);
+            }
+            setResponse(null); // Clear response when endpoint changes
+          } else {
+            // Clear payload if no endpoint selected
+            setSelectedScenarioId(null);
+            setCurrentPayload("");
+            setJsonError(null);
+            setResponse(null);
+          }
+        }, [selectedEndpoint]); // Rerun when selectedEndpoint changes
+
+        // Handlers
+        const handleTokenChange = (e) => {
+          const value = e.target.value;
+          setToken(value);
+          // Basic validation (adjust as needed)
+          const isValid = value.startsWith("Bearer ") && value.length > 20;
+          setTokenValid(value ? isValid : null);
+        };
+
+        const handleSelectScenario = (scenario) => {
+          setSelectedScenarioId(scenario.id);
+          setCurrentPayload(JSON.stringify(scenario.payload, null, 2));
+          setJsonError(null);
+        };
+
+        const handlePayloadChange = (e) => {
+          const newPayload = e.target.value;
+          setCurrentPayload(newPayload);
+          validateJson(newPayload);
+        };
+
+        const validateJson = (payloadString) => {
+          // Allow empty payload for methods like GET/DELETE
+          if (
+            !payloadString.trim() &&
+            selectedEndpoint &&
+            ["GET", "DELETE"].includes(selectedEndpoint.method)
+          ) {
+            setJsonError(null);
+            return true;
+          }
+          // Require payload for other methods
+          if (
+            !payloadString.trim() &&
+            selectedEndpoint &&
+            ["POST", "PUT", "PATCH"].includes(selectedEndpoint.method)
+          ) {
+            setJsonError("Payload cannot be empty for this method.");
+            return false;
+          }
+          // Validate JSON format
+          try {
+            JSON.parse(payloadString);
+            setJsonError(null);
+            return true;
+          } catch (err) {
+            setJsonError("Invalid JSON format");
+            return false;
+          }
+        };
+
+        const handleFormatJson = () => {
+          try {
+            const parsed = JSON.parse(currentPayload);
+            const formatted = JSON.stringify(parsed, null, 2);
+            setCurrentPayload(formatted);
+            setJsonError(null);
+          } catch (err) {
+            setJsonError("Cannot format invalid JSON");
+          }
+        };
+
+        const handleResetPayload = () => {
+          if (selectedScenario) {
+            setCurrentPayload(
+              JSON.stringify(selectedScenario.payload, null, 2)
+            );
+          } else if (selectedEndpoint) {
+            // Reset to default based on method if no scenario selected
+            const defaultPayload = ["POST", "PUT", "PATCH"].includes(
+              selectedEndpoint.method
+            )
+              ? "{}"
+              : "";
+            setCurrentPayload(defaultPayload);
+          } else {
+            setCurrentPayload("");
+          }
+          setJsonError(null);
+        };
+
+        const formatCurl = (endpoint, payloadObject) => {
+          if (!endpoint) return "";
+          const baseUrl =
+            environment === "sandbox"
+              ? "https://sandbox.abrakadabra-bank.com"
+              : "https://api.abrakadabra-bank.com";
+          let path = endpoint.path;
+          const pathParams = path.match(/{([^}]+)}/g) || [];
+          let currentPayloadObject = {};
+
+          // Try parsing current payload string for accurate cURL generation
+          try {
+            currentPayloadObject = currentPayload
+              ? JSON.parse(currentPayload)
+              : {};
+          } catch {
+            // Use the initially passed payloadObject (from scenario or default) if current is invalid
+            currentPayloadObject = payloadObject || {};
+          }
+
+          // Replace path parameters using the current payload state
+          pathParams.forEach((paramMatch) => {
+            const paramName = paramMatch.slice(1, -1);
+            if (
+              currentPayloadObject &&
+              currentPayloadObject.hasOwnProperty(paramName)
+            ) {
+              path = path.replace(
+                paramMatch,
+                encodeURIComponent(currentPayloadObject[paramName])
+              );
+            } else {
+              path = path.replace(paramMatch, `{${paramName}}`); // Keep placeholder if not found
+            }
+          });
+
+          // Handle query parameters for GET requests from current payload state
+          let queryParams = "";
+          if (endpoint.method === "GET" && currentPayloadObject) {
+            const params = Object.entries(currentPayloadObject)
+              .filter(([key]) => !pathParams.some((p) => p === `{${key}}`)) // Exclude path params
+              .map(
+                ([key, value]) =>
+                  `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+              )
+              .join("&");
+            if (params) queryParams = `?${params}`;
+          }
+
+          let curl = `curl -X ${endpoint.method} "${baseUrl}${path}${queryParams}"`;
+          curl += ` \\\n  -H "Authorization: ${
+            token || "Bearer YOUR_TOKEN_HERE"
+          }"`;
+          curl += ` \\\n  -H "Content-Type: application/json"`;
+          curl += ` \\\n  -H "Accept: application/json"`;
+
+          // Add payload body for relevant methods using current payload state
+          if (
+            ["POST", "PUT", "PATCH"].includes(endpoint.method) &&
+            currentPayloadObject
+          ) {
+            const bodyPayload = { ...currentPayloadObject };
+            pathParams.forEach((paramMatch) => {
+              // Remove path params from body
+              const paramName = paramMatch.slice(1, -1);
+              delete bodyPayload[paramName];
+            });
+            if (Object.keys(bodyPayload).length > 0) {
+              // Ensure the payload used here is the *current* state, not the initial scenario one
+              try {
+                const currentBody = JSON.parse(currentPayload);
+                // Filter out path params from the *current* payload for the body
+                const finalBody = Object.keys(currentBody)
+                  .filter((key) => !pathParams.some((p) => p === `{${key}}`))
+                  .reduce((obj, key) => {
+                    obj[key] = currentBody[key];
+                    return obj;
+                  }, {});
+
+                if (Object.keys(finalBody).length > 0) {
+                  curl += ` \\\n  -d '${JSON.stringify(finalBody, null, 2)}'`;
+                }
+              } catch {
+                // Handle case where currentPayload is invalid JSON - maybe show an error or skip -d
+                // For now, we'll skip adding the -d if currentPayload is invalid
+                console.warn("Could not parse current payload for cURL body.");
+              }
+            }
+          }
+          return curl;
+        };
+
+        const handleSendRequest = (retryPayload = null) => {
+          // Use retryPayload if provided (e.g., from history retry), otherwise use current state
+          const payloadToUse = retryPayload
+            ? JSON.stringify(retryPayload, null, 2)
+            : currentPayload;
+          const endpointToUse = selectedEndpoint; // Assuming retry uses the currently selected endpoint context
+
+          if (
+            !tokenValid ||
+            !endpointToUse ||
+            isLoading ||
+            (!retryPayload && jsonError)
+          )
+            return;
+
+          let payloadObject;
+          try {
+            payloadObject = payloadToUse ? JSON.parse(payloadToUse) : {};
+          } catch (e) {
+            // This should ideally not happen if validation is working, but handle defensively
+            setJsonError("Invalid JSON format before sending.");
+            return;
+          }
+
+          setIsLoading(true);
+          setResponse(null);
+          setStartTime(performance.now());
+
+          // --- Mock API Call ---
+          const mockDuration = 400 + Math.random() * 800;
+          setTimeout(() => {
+            const endTime = performance.now();
+            const responseTime = Math.round(endTime - startTime);
+
+            // Determine mock status
+            let mockStatus = 200;
+            let success = true;
+            // Use selected scenario if NOT a retry from history OR if history item includes scenario info
+            const currentScenario = selectedScenarioId
+              ? endpointToUse?.testScenarios.find(
+                  (sc) => sc.id === selectedScenarioId
+                )
+              : null;
+
+            if (currentScenario && !retryPayload) {
+              // Use current scenario if not a generic retry
+              mockStatus =
+                currentScenario.expectedStatus ||
+                (currentScenario.type === "positive"
+                  ? endpointToUse.method === "POST"
+                    ? 201
+                    : 200
+                  : 400);
+              success = currentScenario.type === "positive";
+            } else {
+              // Fallback logic (e.g., for custom payload or simple retry)
+              success = Math.random() > 0.25; // 75% success rate
+              mockStatus = success
+                ? endpointToUse.method === "POST"
+                  ? 201
+                  : 200
+                : Math.random() > 0.5
+                ? 400
+                : 404;
+            }
+
+            let responseBody;
+            if (success) {
+              responseBody = {
+                requestId: generateId("req_"),
+                message: "Operation successful",
+                timestamp: new Date().toISOString(),
+                // Add more realistic success data based on endpoint if needed
+                ...(endpointToUse.id === "create_payment" && {
+                  paymentId: generateId("pmt_"),
+                  status: "PENDING",
+                }),
+                ...(endpointToUse.id === "get_balance" && {
+                  accountId: payloadObject.accountId || "unknown",
+                  currency: "USD",
+                  currentBalance: (Math.random() * 10000).toFixed(2),
+                  availableBalance: (Math.random() * 9000).toFixed(2),
+                }),
+                ...(endpointToUse.id === "get_payment" && {
+                  paymentId: payloadObject.paymentId || "unknown",
+                  status: Math.random() > 0.5 ? "COMPLETED" : "PROCESSING",
+                  amount: (Math.random() * 1000).toFixed(2),
+                  currency: "USD",
+                }),
+                ...(endpointToUse.id === "get_transactions" && {
+                  accountId: payloadObject.accountId || "unknown",
+                  transactions: Array.from(
+                    { length: Math.min(payloadObject.limit || 5, 5) },
+                    (_, i) => ({
+                      id: generateId("txn_"),
+                      date: new Date(Date.now() - i * 86400000)
+                        .toISOString()
+                        .split("T")[0],
+                      description: `Transaction ${i + 1}`,
+                      amount: (Math.random() * 200 - 100).toFixed(2),
+                      currency: "USD",
+                    })
+                  ),
+                }),
+              };
+            } else {
+              responseBody = {
+                requestId: generateId("req_"),
+                timestamp: new Date().toISOString(),
+                error: {
+                  code:
+                    mockStatus === 400
+                      ? "INVALID_INPUT"
+                      : mockStatus === 404
+                      ? "NOT_FOUND"
+                      : "PROCESSING_ERROR",
+                  message:
+                    mockStatus === 400
+                      ? "Request validation failed."
+                      : mockStatus === 404
+                      ? "The requested resource was not found."
+                      : "An internal error occurred.",
+                  details: currentScenario?.name || "Error processing request.", // Include scenario name if applicable
+                },
+              };
+            }
+
+            const responseObj = {
+              status: mockStatus,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Request-Id": responseBody.requestId,
+                Date: new Date().toUTCString(),
+                "Content-Length": JSON.stringify(responseBody).length,
+                "X-RateLimit-Remaining": Math.floor(Math.random() * 100),
+                "X-Environment": environment,
+              },
+              body: responseBody,
+              requestTimestamp: new Date(startTime).toISOString(),
+              endpoint: endpointToUse,
+              payload: payloadObject, // Store the actual payload used for the request
+              responseTime: responseTime,
+            };
+
+            setResponse(responseObj);
+            setIsLoading(false);
+            setResponseTab("formatted"); // Default to formatted tab on new response
+
+            // Add to history
+            const historyItem = {
+              id: Date.now(),
+              endpointName: endpointToUse.name,
+              scenarioName: currentScenario?.name || "Custom Payload", // Use current scenario name or 'Custom'
+              method: endpointToUse.method,
+              status: mockStatus,
+              success: mockStatus >= 200 && mockStatus < 300,
+              timestamp: new Date().toISOString(),
+              responseTime: responseTime,
+              // Store request details for potential retry (optional)
+              // requestPayload: payloadObject,
+              // endpointId: endpointToUse.id,
+            };
+            setTestHistory((prev) => [historyItem, ...prev].slice(0, 50)); // Keep latest 50
+          }, mockDuration);
+        };
+
+        const handleRetryRequest = () => {
+          if (response && response.endpoint && response.payload) {
+            // Select the original endpoint and scenario if possible
+            setSelectedCategoryId(
+              Object.keys(apiStructure).find((catId) =>
+                apiStructure[catId].endpoints.some(
+                  (ep) => ep.id === response.endpoint.id
+                )
+              ) || selectedCategoryId
+            );
+            setSelectedEndpointId(response.endpoint.id);
+            // Find the original scenario if it exists
+            const originalScenario = response.endpoint.testScenarios?.find(
+              (sc) =>
+                JSON.stringify(sc.payload) === JSON.stringify(response.payload)
+            );
+            if (originalScenario) {
+              setSelectedScenarioId(originalScenario.id);
+            } else {
+              setSelectedScenarioId(null); // Mark as custom if payload doesn't match a scenario
+            }
+            // Set the payload from the previous request
+            setCurrentPayload(JSON.stringify(response.payload, null, 2));
+            setJsonError(null); // Assume previous payload was valid
+            // Send the request again
+            handleSendRequest();
+          }
+        };
+
+        const handleCopyResponse = () => {
+          if (response && response.body) {
+            const bodyString = JSON.stringify(response.body, null, 2);
+            navigator.clipboard
+              .writeText(bodyString)
+              .then(() => {
+                // Optional: Show temporary success message
+                console.log("Response copied!");
+              })
+              .catch((err) => console.error("Failed to copy response:", err));
+          }
+        };
+
+        // --- Render Logic ---
+        return (
+          <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
+            {/* Top Navigation Bar */}
+            <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-2 flex items-center justify-between flex-shrink-0 shadow-sm z-10">
+              <div className="flex items-center space-x-4">
+                {/* Sidebar Toggle */}
+                <button
+                  onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                  className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
+                  aria-label={
+                    isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
+                  }
+                >
+                  <Icon
+                    path={
+                      isSidebarCollapsed
+                        ? "M4 6h16M4 12h16M4 18h7"
+                        : "M4 6h16M4 12h16M4 18h16"
+                    }
+                    className="w-6 h-6"
+                  />
+                </button>
+                {/* Logo */}
+                <div className="flex items-center space-x-2">
+                  <Icon
+                    path="M14.121 14.121L19 19M4.879 4.879L9.757 9.757M12 21a9 9 0 110-18 9 9 0 010 18z"
+                    className="w-7 h-7 text-teal-500 dark:text-teal-400"
+                  />
+                  <span className="text-lg font-semibold text-gray-800 dark:text-gray-100 hidden md:inline">
+                    AbraKaDabra Bank API
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                {/* Environment & Token (Consider moving to a settings modal/dropdown later) */}
+                <div className="flex items-center space-x-3 border-l border-gray-200 dark:border-gray-600 pl-4">
+                  <div>
+                    <label htmlFor="env-select" className="sr-only">
+                      Environment
+                    </label>
+                    <select
+                      id="env-select"
+                      value={environment}
+                      onChange={(e) => setEnvironment(e.target.value)}
+                      className="input input-sm text-xs appearance-none pr-6"
+                      title="Select Environment"
+                    >
+                      <option value="sandbox">Sandbox</option>
+                      <option value="production" disabled>
+                        Production
+                      </option>
+                    </select>
+                  </div>
+                  <div className="relative">
+                    <label htmlFor="token-input" className="sr-only">
+                      API Token
+                    </label>
+                    <input
+                      id="token-input"
+                      type="password"
+                      value={token}
+                      onChange={handleTokenChange}
+                      placeholder="Bearer sk_..."
+                      title="Enter API Token (Bearer)"
+                      className={`input input-sm text-xs w-48 pr-6 ${
+                        tokenValid === false
+                          ? "border-red-500 focus:ring-red-500/50"
+                          : tokenValid === true
+                          ? "border-green-500 focus:ring-green-500/50"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                    />
+                    {token && (
+                      <span
+                        className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-xs ${
+                          tokenValid ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
+                        {tokenValid ? "✓" : "✗"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* History Button */}
+                <button
+                  onClick={() => setShowHistory(true)}
+                  className="btn btn-secondary btn-sm relative"
+                  title="Show Test History"
+                >
+                  <Icon
+                    path="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    className="w-4 h-4 mr-1"
+                  />
+                  <span className="hidden md:inline">History</span>
+                  {testHistory.length > 0 && (
+                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                      {testHistory.length}
+                    </span>
+                  )}
+                </button>
+
+                {/* Dark Mode Toggle */}
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
+                  title={
+                    isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                  }
+                >
+                  <Icon
+                    path={
+                      isDarkMode
+                        ? "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        : "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    }
+                    className="w-5 h-5"
+                  />
+                </button>
+
+                {/* Documentation Link */}
+                <a
+                  href="https://docs.abrakadabra-bank.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
+                  title="Open API Documentation"
+                >
+                  <Icon
+                    path="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    className="w-5 h-5"
+                  />
+                </a>
+              </div>
+            </header>
+
+            {/* Main Layout */}
+            <div className="flex flex-grow overflow-hidden">
+              {/* Sidebar */}
+              <aside
+                className={`sidebar ${
+                  isSidebarCollapsed ? "collapsed" : ""
+                } p-4 overflow-y-auto flex flex-col`}
+              >
+                {/* Category Search */}
+                {!isSidebarCollapsed && (
+                  <div className="mb-4 flex-shrink-0">
+                    <label htmlFor="category-search" className="sr-only">
+                      Search Categories
+                    </label>
+                    <input
+                      id="category-search"
+                      type="text"
+                      placeholder="Search categories..."
+                      value={categorySearchTerm}
+                      onChange={(e) => setCategorySearchTerm(e.target.value)}
+                      className="input input-sm w-full"
+                    />
+                  </div>
+                )}
+
+                {/* Category List */}
+                <nav className="space-y-1 flex-grow overflow-y-auto">
+                  {Object.entries(filteredApiStructure).length > 0 ? (
+                    Object.entries(filteredApiStructure).map(
+                      ([id, category]) => (
+                        <a
+                          href="#"
+                          key={id}
+                          title={category.name}
+                          className={`sidebar-link ${
+                            selectedCategoryId === id ? "active" : ""
+                          }`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setSelectedCategoryId(id);
+                            setEndpointSearchTerm(
+                              ""
+                            ); /* Clear endpoint search on category change */
+                          }}
+                          aria-current={
+                            selectedCategoryId === id ? "page" : undefined
+                          }
+                        >
+                          <Icon
+                            path={category.icon}
+                            className="w-5 h-5 mr-3 flex-shrink-0"
+                            ariaHidden={true}
+                          />
+                          <span className="sidebar-text">{category.name}</span>
+                        </a>
+                      )
+                    )
+                  ) : (
+                    <p
+                      className={`text-xs text-gray-500 dark:text-gray-400 ${
+                        isSidebarCollapsed ? "hidden" : "p-2 text-center"
+                      }`}
+                    >
+                      No categories found.
+                    </p>
+                  )}
+                </nav>
+              </aside>
+
+              {/* Content Area */}
+              <main className="flex-grow flex overflow-hidden bg-white dark:bg-gray-800/50">
+                {/* Endpoint List */}
+                <section className="w-72 md:w-80 border-r border-gray-200 dark:border-gray-700 p-4 flex flex-col overflow-hidden flex-shrink-0">
+                  <div className="flex-shrink-0 mb-4">
+                    <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                      {selectedCategory?.name || "Select Category"} Endpoints
+                    </h2>
+                    {/* Endpoint Search */}
+                    {selectedCategory && (
+                      <div>
+                        <label htmlFor="endpoint-search" className="sr-only">
+                          Search Endpoints
+                        </label>
+                        <input
+                          id="endpoint-search"
+                          type="text"
+                          placeholder="Search endpoints..."
+                          value={endpointSearchTerm}
+                          onChange={(e) =>
+                            setEndpointSearchTerm(e.target.value)
+                          }
+                          className="input input-sm w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedCategory ? (
+                    <div className="space-y-3 overflow-y-auto flex-grow">
+                      {filteredEndpoints.length > 0 ? (
+                        filteredEndpoints.map((endpoint) => (
+                          <div
+                            key={endpoint.id}
+                            className={`endpoint-card p-3 ${
+                              selectedEndpointId === endpoint.id ? "active" : ""
+                            }`}
+                            onClick={() => setSelectedEndpointId(endpoint.id)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyPress={(e) =>
+                              e.key === "Enter" &&
+                              setSelectedEndpointId(endpoint.id)
+                            }
+                            aria-pressed={selectedEndpointId === endpoint.id}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span
+                                className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate"
+                                title={endpoint.name}
+                              >
+                                {endpoint.name}
+                              </span>
+                              <Badge
+                                text={endpoint.method}
+                                color={endpoint.method}
+                              />
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 font-mono break-all mb-1">
+                              {endpoint.path}
+                            </p>
+                            <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">
+                              {endpoint.description}
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                          No endpoints match your search.
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 dark:text-gray-400 text-center flex-grow flex items-center justify-center">
+                      Select a category from the sidebar.
+                    </p>
+                  )}
+                </section>
+
+                {/* Request/Response Panel */}
+                <section className="flex-grow flex flex-col overflow-hidden p-4 md:p-6 space-y-4 md:space-y-6 bg-gray-50 dark:bg-gray-900">
+                  {selectedEndpoint ? (
+                    <>
+                      {/* Request Builder */}
+                      <div className="card p-4 md:p-5 animate-slideDown flex-shrink-0">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                              Request:{" "}
+                              <span className="text-teal-600 dark:text-teal-400">
+                                {selectedEndpoint.name}
+                              </span>
+                            </h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                              {selectedEndpoint.description}
+                            </p>
+                          </div>
+                          {/* Documentation Link for Endpoint */}
+                          {selectedEndpoint.docsUrl && (
+                            <a
+                              href={selectedEndpoint.docsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-secondary btn-sm ml-4 flex-shrink-0"
+                              title="View Docs for this Endpoint"
+                            >
+                              <Icon
+                                path="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                className="w-4 h-4 mr-1"
+                              />{" "}
+                              Docs
+                            </a>
+                          )}
+                        </div>
+
+                        {/* Scenario Selection */}
+                        {selectedEndpoint.testScenarios?.length > 0 && (
+                          <div className="mb-4">
+                            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                              Test Scenarios
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedEndpoint.testScenarios.map(
+                                (scenario) => (
+                                  <button
+                                    key={scenario.id}
+                                    onClick={() =>
+                                      handleSelectScenario(scenario)
+                                    }
+                                    className={`scenario-btn ${scenario.type} ${
+                                      selectedScenarioId === scenario.id
+                                        ? "active"
+                                        : ""
+                                    }`}
+                                    aria-pressed={
+                                      selectedScenarioId === scenario.id
+                                    }
+                                  >
+                                    {scenario.name}
+                                  </button>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Payload Editor */}
+                        <div className="mb-4">
+                          <div className="flex justify-between items-center mb-1">
+                            <label
+                              htmlFor="payload-editor"
+                              className="block text-xs font-medium text-gray-500 dark:text-gray-400"
+                            >
+                              Payload
+                            </label>
+                            {/* Payload Actions */}
+                            {!["GET", "DELETE"].includes(
+                              selectedEndpoint.method
+                            ) && (
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={handleFormatJson}
+                                  className="btn btn-ghost btn-xs"
+                                  title="Format JSON"
+                                  disabled={
+                                    !!jsonError || !currentPayload.trim()
+                                  }
+                                >
+                                  <Icon
+                                    path="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                                    className="w-4 h-4 mr-1"
+                                  />{" "}
+                                  Format
+                                </button>
+                                <button
+                                  onClick={handleResetPayload}
+                                  className="btn btn-ghost btn-xs"
+                                  title="Reset to selected scenario or default"
+                                >
+                                  <Icon
+                                    path="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9H0v5h.581m15.357 2a8.001 8.001 0 01-14.24 5.33"
+                                    className="w-4 h-4 mr-1"
+                                  />{" "}
+                                  Reset
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          {/* Replace textarea with a div wrapper if using a real editor like Monaco */}
+                          <textarea
+                            id="payload-editor"
+                            rows="8"
+                            className={`input w-full p-2 font-mono text-xs leading-relaxed ${
+                              jsonError
+                                ? "border-red-500 focus:ring-red-500/50"
+                                : "border-gray-300 dark:border-gray-600 focus:border-teal-500 focus:ring-teal-500/50"
+                            } ${
+                              ["GET", "DELETE"].includes(
+                                selectedEndpoint.method
+                              )
+                                ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+                                : ""
+                            }`}
+                            value={currentPayload}
+                            onChange={handlePayloadChange}
+                            placeholder={
+                              ["GET", "DELETE"].includes(
+                                selectedEndpoint.method
+                              )
+                                ? "Payload not applicable for " +
+                                  selectedEndpoint.method
+                                : "Enter JSON payload..."
+                            }
+                            disabled={["GET", "DELETE"].includes(
+                              selectedEndpoint.method
+                            )}
+                            aria-invalid={!!jsonError}
+                            aria-describedby={
+                              jsonError ? "payload-error" : undefined
+                            }
+                          />
+                          {jsonError && (
+                            <p
+                              id="payload-error"
+                              className="text-xs text-red-600 dark:text-red-400 mt-1"
+                            >
+                              {jsonError}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Action Button */}
+                        <div className="flex justify-end items-center border-t border-gray-200 dark:border-gray-700 pt-4">
+                          <button
+                            className="btn btn-primary w-full sm:w-auto"
+                            onClick={() => handleSendRequest()}
+                            disabled={!tokenValid || isLoading || !!jsonError}
+                            title={
+                              !tokenValid
+                                ? "Valid token required"
+                                : jsonError
+                                ? "Invalid JSON payload"
+                                : `Send ${selectedEndpoint.method} request`
+                            }
+                          >
+                            {isLoading ? (
+                              <>
+                                <svg
+                                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  ></circle>
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                  ></path>
+                                </svg>
+                                Sending...
+                              </>
+                            ) : (
+                              <>
+                                <Icon
+                                  path="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                                  className="w-4 h-4 mr-2"
+                                />{" "}
+                                Send Request
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Response Viewer */}
+                      <div className="card p-4 md:p-5 flex-grow flex flex-col overflow-hidden animate-slideDown">
+                        <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 flex-wrap gap-2">
+                          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                            Response
+                          </h3>
+                          {response && !isLoading && (
+                            <div className="flex items-center space-x-2 flex-wrap gap-2">
+                              <Badge
+                                text={`${response.status} ${
+                                  response.status >= 200 &&
+                                  response.status < 300
+                                    ? "OK"
+                                    : response.body?.error?.code || "Error"
+                                }`}
+                                color={
+                                  response.status >= 200 &&
+                                  response.status < 300
+                                    ? "success"
+                                    : "error"
+                                }
+                              />
+                              <Badge
+                                text={`${response.responseTime} ms`}
+                                color="info"
+                              />
+                              {/* Retry Button */}
+                              <button
+                                onClick={handleRetryRequest}
+                                className="btn btn-secondary btn-xs"
+                                title="Retry this request"
+                              >
+                                <Icon
+                                  path="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9H0v5h.581m15.357 2a8.001 8.001 0 01-14.24 5.33"
+                                  className="w-3 h-3 mr-1"
+                                />{" "}
+                                Retry
+                              </button>
+                              {/* Copy Response Button */}
+                              <button
+                                onClick={handleCopyResponse}
+                                className="btn btn-secondary btn-xs"
+                                title="Copy response body"
+                              >
+                                <Icon
+                                  path="M8 7v8a2 2 0 002 2h4M8 7a2 2 0 012-2h4a2 2 0 012 2v8a2 2 0 01-2 2h-2"
+                                  className="w-3 h-3 mr-1"
+                                />{" "}
+                                Copy
+                              </button>
+                              <button
+                                onClick={() => setResponse(null)}
+                                className="btn btn-ghost btn-xs p-1"
+                                title="Clear Response"
+                              >
+                                <Icon
+                                  path="M6 18L18 6M6 6l12 12"
+                                  className="w-4 h-4"
+                                />
+                              </button>
+                            </div>
+                          )}
+                          {isLoading && (
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                              Loading...
+                            </span>
+                          )}
+                        </div>
+
+                        {response ? (
+                          <div className="flex-grow flex flex-col overflow-hidden">
+                            {/* Tabs */}
+                            <div className="border-b border-gray-200 dark:border-gray-700 mb-4 flex-shrink-0">
+                              <nav
+                                className="flex -mb-px space-x-4 md:space-x-6 overflow-x-auto"
+                                aria-label="Response Tabs"
+                              >
+                                {[
+                                  "Formatted",
+                                  "Raw",
+                                  "Headers",
+                                  "cURL",
+                                  "Overview",
+                                ].map((tab) => (
+                                  <button
+                                    key={tab}
+                                    id={`${tab.toLowerCase()}-tab`}
+                                    role="tab"
+                                    aria-controls={`${tab.toLowerCase()}-panel`}
+                                    aria-selected={
+                                      responseTab === tab.toLowerCase()
+                                    }
+                                    className={`py-2 px-1 text-sm whitespace-nowrap ${
+                                      responseTab === tab.toLowerCase()
+                                        ? "tab-active"
+                                        : "tab-inactive"
+                                    }`}
+                                    onClick={() =>
+                                      setResponseTab(tab.toLowerCase())
+                                    }
+                                  >
+                                    {tab}
+                                  </button>
+                                ))}
+                              </nav>
+                            </div>
+                            {/* Tab Content */}
+                            <div className="flex-grow overflow-y-auto">
+                              <TabPanel activeTab={responseTab} id="formatted">
+                                <CodeBlock
+                                  language="json"
+                                  content={response.body}
+                                />
+                              </TabPanel>
+                              <TabPanel activeTab={responseTab} id="raw">
+                                {/* Use text language for raw view */}
+                                <CodeBlock
+                                  language="text"
+                                  content={JSON.stringify(
+                                    response.body,
+                                    null,
+                                    2
+                                  )}
+                                />
+                              </TabPanel>
+                              <TabPanel activeTab={responseTab} id="headers">
+                                <CodeBlock
+                                  language="json"
+                                  content={response.headers}
+                                />
+                              </TabPanel>
+                              <TabPanel activeTab={responseTab} id="curl">
+                                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">
+                                  Request as cURL
+                                </h4>
+                                {/* Pass current endpoint and payload state to formatCurl */}
+                                <CodeBlock
+                                  language="bash"
+                                  content={formatCurl(
+                                    selectedEndpoint,
+                                    currentPayload
+                                  )}
+                                />
+                              </TabPanel>
+                              <TabPanel activeTab={responseTab} id="overview">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                  <div>
+                                    <h4 className="font-semibold mb-2 border-b pb-1 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200">
+                                      Request
+                                    </h4>
+                                    <dl className="space-y-1 text-gray-600 dark:text-gray-300">
+                                      <div className="flex">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Method:
+                                        </dt>
+                                        <dd>
+                                          <Badge
+                                            text={response.endpoint.method}
+                                            color={response.endpoint.method}
+                                          />
+                                        </dd>
+                                      </div>
+                                      <div className="flex">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Path:
+                                        </dt>
+                                        <dd className="font-mono text-xs break-all">
+                                          {response.endpoint.path}
+                                        </dd>
+                                      </div>
+                                      <div className="flex">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Sent At:
+                                        </dt>
+                                        <dd>
+                                          {new Date(
+                                            response.requestTimestamp
+                                          ).toLocaleString()}
+                                        </dd>
+                                      </div>
+                                      <div className="flex">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Environment:
+                                        </dt>
+                                        <dd>{environment}</dd>
+                                      </div>
+                                    </dl>
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold mb-2 border-b pb-1 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200">
+                                      Response
+                                    </h4>
+                                    <dl className="space-y-1 text-gray-600 dark:text-gray-300">
+                                      <div className="flex items-center">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Status:
+                                        </dt>
+                                        <dd>
+                                          <Badge
+                                            text={`${response.status} ${
+                                              response.status >= 200 &&
+                                              response.status < 300
+                                                ? "OK"
+                                                : response.body?.error?.code ||
+                                                  "Error"
+                                            }`}
+                                            color={
+                                              response.status >= 200 &&
+                                              response.status < 300
+                                                ? "success"
+                                                : "error"
+                                            }
+                                          />
+                                        </dd>
+                                      </div>
+                                      <div className="flex">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Duration:
+                                        </dt>
+                                        <dd>{response.responseTime} ms</dd>
+                                      </div>
+                                      <div className="flex">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Size:
+                                        </dt>
+                                        <dd>
+                                          {response.headers["Content-Length"] ||
+                                            "-"}{" "}
+                                          bytes
+                                        </dd>
+                                      </div>
+                                      <div className="flex">
+                                        <dt className="w-24 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                          Request ID:
+                                        </dt>
+                                        <dd className="text-xs font-mono break-all">
+                                          {response.headers["X-Request-Id"] ||
+                                            "-"}
+                                        </dd>
+                                      </div>
+                                    </dl>
+                                  </div>
+                                </div>
+                              </TabPanel>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex-grow flex items-center justify-center text-gray-400 dark:text-gray-500">
+                            {isLoading
+                              ? "Waiting for response..."
+                              : "Send a request to see the response here."}
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex-grow flex items-center justify-center text-gray-500 dark:text-gray-400">
+                      {selectedCategory
+                        ? "Select an endpoint from the list."
+                        : "Select a category and endpoint to begin."}
+                    </div>
+                  )}
+                </section>
+              </main>
+            </div>
+
+            {/* History Panel Modal */}
+            {showHistory && (
+              <HistoryPanel
+                history={testHistory}
+                onClose={() => setShowHistory(false)}
+                onClear={() => {
+                  setTestHistory([]);
+                  setShowHistory(false);
+                }} // Close modal on clear
+                // onRetry={handleRetryFromHistory} // Pass retry handler if implemented
+              />
+            )}
+          </div>
+        );
+      };
+
+      ReactDOM.createRoot(document.getElementById("root")).render(
+        <BankingApiPortal />
+      );
+    </script>
+  </body>
+</html>
